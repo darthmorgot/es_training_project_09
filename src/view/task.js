@@ -1,6 +1,6 @@
-import {isTaskExpired, isTaskRepeating, humanizeTaskDueDate} from '../utils';
+import {isTaskExpired, isTaskRepeating, humanizeTaskDueDate, createElement} from '../utils';
 
-export const createTaskTemplate = (task) => {
+const createTaskTemplate = (task) => {
   const {descrition, dueDate, color, repeating, isArchive, isFavorite} = task;
 
   const date = dueDate !== null ? humanizeTaskDueDate(dueDate) : ``;
@@ -10,8 +10,7 @@ export const createTaskTemplate = (task) => {
   const archiveClassName = isArchive ? `card__btn--archive card__btn--disabled` : `card__btn--archive`;
   const favoriteClassName = isFavorite ? `card__btn--favorites card__btn--disabled` : `card__btn--favorites`;
 
-  return `
-    <article class="card card--${color} ${repeatClassName} ${deadlineClassName}">
+  return `<article class="card card--${color} ${repeatClassName} ${deadlineClassName}">
       <div class="card__form">
         <div class="card__inner">
           <div class="card__control">
@@ -53,6 +52,28 @@ export const createTaskTemplate = (task) => {
           </div>
         </div>
       </div>
-    </article>
-  `;
+    </article>`;
 };
+
+export default class Task {
+  constructor(task) {
+    this._task = task;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTaskTemplate(this._task);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
