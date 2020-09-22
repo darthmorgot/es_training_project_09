@@ -1,8 +1,8 @@
 import {COLORS} from '../const';
-import {getRandomInteger} from '../utils';
+import {getRandomInteger} from '../utils/common';
 
-const generateDescrition = () => {
-  const descritions = [
+const generateDescription = () => {
+  const descriptions = [
     `This is example of task edit. You can set date and chose repeating days and color.`,
     `Example task with default color.`,
     `Example task with custom color.`,
@@ -14,9 +14,9 @@ const generateDescrition = () => {
     `This is task with missing deadline. Deadline always marked by red line.`
   ];
 
-  const randomIndex = getRandomInteger(0, descritions.length - 1);
+  const randomIndex = getRandomInteger(0, descriptions.length - 1);
 
-  return descritions[randomIndex];
+  return descriptions[randomIndex];
 };
 
 const generateDate = () => {
@@ -70,7 +70,7 @@ export const generateTask = () => {
     };
 
   return {
-    descrition: generateDescrition(),
+    description: generateDescription(),
     dueDate,
     repeating,
     color: getRandomColor(),
