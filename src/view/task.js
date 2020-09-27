@@ -1,10 +1,10 @@
 import AbstractView from './abstract';
-import {isTaskExpired, isTaskRepeating, humanizeTaskDueDate} from '../utils/task';
+import {isTaskExpired, isTaskRepeating, formatTaskDueDate} from '../utils/task';
 
 const createTaskTemplate = (task) => {
   const {description, dueDate, color, repeating, isArchive, isFavorite} = task;
 
-  const date = dueDate !== null ? humanizeTaskDueDate(dueDate) : ``;
+  const date = formatTaskDueDate(dueDate);
   const deadlineClassName = isTaskExpired(dueDate) ? `card--deadline` : ``;
   const repeatClassName = isTaskRepeating(repeating) ? `card--repeat` : ``;
 
@@ -60,7 +60,10 @@ export default class Task extends AbstractView {
   constructor(task) {
     super();
     this._task = task;
+
     this._editClickHandler = this._editClickHandler.bind(this);
+    this._archiveClickHandler = this._archiveClickHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -72,9 +75,28 @@ export default class Task extends AbstractView {
     this._callback.editClick();
   }
 
+  _archiveClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.archiveClick();
+  }
+
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoriteClick();
+  }
+
   setEditClickHandler(callback) {
     this._callback.editClick = callback;
     this.getElement().querySelector(`.card__btn--edit`).addEventListener(`click`, this._editClickHandler);
   }
 
+  setArchiveClickHandler(callback) {
+    this._callback.archiveClick = callback;
+    this.getElement().querySelector(`.card__btn--archive`).addEventListener(`click`, this._archiveClickHandler);
+  }
+
+  setFavoriteClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.getElement().querySelector(`.card__btn--favorites`).addEventListener(`click`, this._favoriteClickHandler);
+  }
 }
