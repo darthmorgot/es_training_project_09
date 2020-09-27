@@ -21,24 +21,43 @@ const BLANK_TASK = {
   isFavorite: false
 };
 
+// flatpickr error
+// const createTaskEditDateTemplate = (dueDate, isDueDate) => {
+//   return `<button class="card__date-deadline-toggle" type="button">
+//       date: <span class="card__date-status">${isDueDate ? `yes` : `no`}</span>
+//     </button>
+
+//     ${isDueDate ? `
+//       <fieldset class="card__date-deadline">
+//         <label class="card__input-deadline-wrap">
+//           <input
+//             class="card__date"
+//             type="text"
+//             placeholder=""
+//             name="date"
+//             value="${formatTaskDueDate(dueDate)}"
+//           />
+//         </label>
+//       </fieldset>
+//     ` : ``}`;
+// };
+
 const createTaskEditDateTemplate = (dueDate, isDueDate) => {
   return `<button class="card__date-deadline-toggle" type="button">
       date: <span class="card__date-status">${isDueDate ? `yes` : `no`}</span>
     </button>
 
-    ${isDueDate ? `
-      <fieldset class="card__date-deadline">
-        <label class="card__input-deadline-wrap">
-          <input
-            class="card__date"
-            type="text"
-            placeholder=""
-            name="date"
-            value="${formatTaskDueDate(dueDate)}"
-          />
-        </label>
-      </fieldset>
-    ` : ``}`;
+    <fieldset class="card__date-deadline" style="display:${isDueDate ? `block` : `none`};">
+      <label class="card__input-deadline-wrap">
+        <input
+          class="card__date"
+          type="text"
+          placeholder=""
+          name="date"
+          value="${formatTaskDueDate(dueDate)}"
+        />
+      </label>
+    </fieldset>`;
 };
 
 const createTaskEditRepeatingTemplate = (repeating, isRepeating) => {
@@ -143,7 +162,7 @@ export default class TaskEdit extends SmartView {
   constructor(task = BLANK_TASK) {
     super();
     this._data = TaskEdit.parseTaskToData(task);
-    this._datapicker = null;
+    this._datepicker = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._descriptionInputHandler = this._descriptionInputHandler.bind(this);
@@ -172,13 +191,13 @@ export default class TaskEdit extends SmartView {
   }
 
   _setDatepicker() {
-    if (this._datapicker) {
-      this._datapicker.destroy();
-      this._datapicker = null;
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
     }
 
     if (this._data.dueDate) {
-      this._datapicker = flatpickr(this.getElement().querySelector(`.card__date`), {
+      this._datepicker = flatpickr(this.getElement().querySelector(`.card__date`), {
         dateFormat: `j F`,
         defaultDate: this._data.dueDate,
         onChange: this._dueDateChangeHandler
