@@ -6,13 +6,15 @@ import LoadMoreButtonView from '../view/load-more-button';
 import TaskPresenter from './task';
 import {render, RenderPosition, remove} from '../utils/render';
 import {sortTaskUp, sortTaskDown} from '../utils/task';
+import {filter} from '../utils/filter';
 import {SortType, UserAction, UpdateType} from '../const';
 
 const TASK_COUNT_PER_STEP = 8;
 
 export default class Board {
-  constructor(boardContainer, tasksModel) {
+  constructor(boardContainer, tasksModel, filterModel) {
     this._tasksModel = tasksModel;
+    this._filterModel = filterModel;
     this._boardContainer = boardContainer;
     this._renderedTaskCount = TASK_COUNT_PER_STEP;
     this._currentSortType = SortType.DEFAULT;
@@ -32,6 +34,7 @@ export default class Board {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
     this._tasksModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -42,13 +45,18 @@ export default class Board {
   }
 
   _getTasks() {
+    const filterType = this._filterModel.getFilter();
+    const tasks = this._tasksModel.getTasks();
+    const filteredTasks = filter[filterType](tasks);
+
     switch (this._currentSortType) {
       case SortType.DATE_UP:
-        return this._tasksModel.getTasks().slice().sort(sortTaskUp);
+        return filteredTasks.sort(sortTaskUp);
       case SortType.DATE_DOWN:
-        return this._tasksModel.getTasks().slice().sort(sortTaskDown);
+        return filteredTasks.sort(sortTaskDown);
     }
-    return this._tasksModel.getTasks();
+
+    return filteredTasks;
   }
 
   _handleModeChange() {
