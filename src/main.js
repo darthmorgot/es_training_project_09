@@ -2,6 +2,7 @@ import SiteMenuView from './view/site-menu';
 import FilterView from './view/filter';
 import BoardPresenter from './presenter/board';
 import TasksModel from './model/tasks';
+import FilterModel from './model/filter';
 import {generateTask} from './mock/task';
 import {generateFilter} from './mock/filter';
 import {render} from './utils/render';
@@ -13,6 +14,8 @@ const filters = generateFilter(tasks);
 
 const tasksModel = new TasksModel();
 tasksModel.setTask(tasks);
+
+const filterModel = new FilterModel();
 
 const siteMainElement = document.querySelector(`.main`);
 const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
