@@ -5,6 +5,7 @@ import TasksModel from './model/tasks';
 import FilterModel from './model/filter';
 import {generateTask} from './mock/task';
 import {render} from './utils/render';
+import {MenuItem} from './const';
 
 const TASK_COUNT = 22;
 
@@ -17,11 +18,28 @@ const filterModel = new FilterModel();
 
 const siteMainElement = document.querySelector(`.main`);
 const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
+const siteMenuComponent = new SiteMenuView();
 
-render(siteHeaderElement, new SiteMenuView());
+render(siteHeaderElement, siteMenuComponent);
 
 const boardPresenter = new BoardPresenter(siteMainElement, tasksModel, filterModel);
 const filterPresenter = new FilterPresenter(siteMainElement, filterModel, tasksModel);
+
+const handleSiteMenuClick = (menuItem) => {
+  switch (menuItem) {
+    case MenuItem.ADD_NEW_TASK:
+      // statements_1
+      break;
+    case MenuItem.TASKS:
+      // statements_2
+      break;
+    case MenuItem.STATISTICS:
+      // statements_3
+      break;
+  }
+};
+
+siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 
 filterPresenter.init();
 boardPresenter.init();
