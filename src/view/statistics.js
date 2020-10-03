@@ -1,9 +1,17 @@
 import flatpickr from 'flatpickr';
+import Chart from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import SmartView from './smart';
 import {getCurrentDate} from '../utils/task';
+import {countCompletedTaskInDateRange} from '../utils/statistics';
 
-const createStatisticsTemplate = () => {
-  const completedTaskCount = 0;
+const renderColorsChart = (colorsCtx, tasks) => {};
+
+const renderDaysChart = (dayCtx, tasks, dateFrom, dateTo) => {};
+
+const createStatisticsTemplate = (data) => {
+  const {tasks, dateFrom, dateTo} = data;
+  const completedTaskCount = countCompletedTaskInDateRange(tasks, dateFrom, dateTo);
 
   return `<section class="statistic container">
     <div class="statistic__line">
@@ -51,6 +59,9 @@ export default class Statistics extends SmartView {
       dateTo: getCurrentDate()
     };
 
+    this._colorsChart = null;
+    this._daysChart = null;
+
     this._dateChangeHandler = this._dateChangeHandler.bind(this);
 
     this._setCharts();
@@ -59,6 +70,11 @@ export default class Statistics extends SmartView {
 
   removeElement() {
     super.removeElement();
+
+    if (this._colorsChart !== null || this._daysChart !== null) {
+      this._colorsChart = null;
+      this._daysChart = null;
+    }
 
     if (this._datepicker) {
       this._datepicker.destroy();
@@ -90,7 +106,7 @@ export default class Statistics extends SmartView {
     }
 
     this._datepicker = flatpickr(
-        this.getElement().querySelector(`.statistics__period-input`),
+        this.getElement().querySelector(`.statistic__period-input`),
         {
           mode: `range`,
           dateFormat: `j F`,
@@ -100,5 +116,17 @@ export default class Statistics extends SmartView {
     );
   }
 
-  _setCharts() {}
+  _setCharts() {
+    if (this._colorsChart !== null || this._daysChart !== null) {
+      this._colorsChart = null;
+      this._daysChart = null;
+    }
+
+    const {tasks, dateFrom, dateTo} = this._data;
+    const colorsCtx = this.getElement().querySelector(`.statistic__colors`);
+    const daysCtx = this.getElement().querySelector(`.statistic__days`);
+
+    this._colorsChart = renderColorsChart(colorsCtx, tasks);
+    this._daysChart = renderDaysChart(daysCtx, tasks, dateFrom, dateTo);
+  }
 }
