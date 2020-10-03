@@ -3,17 +3,22 @@ import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import SmartView from './smart';
 import {getCurrentDate} from '../utils/task';
-import {countCompletedTaskInDateRange} from '../utils/statistics';
+import {countCompletedTaskInDateRange, colorToHex, makeItemsUniq, countTasksByColor} from '../utils/statistics';
 
 const renderColorsChart = (colorsCtx, tasks) => {
+  const taskColors = tasks.map((task) => task.color);
+  const uniqColors = makeItemsUniq(taskColors);
+  const taskByColorCounts = uniqColors.map((color) => countTasksByColor(tasks, color));
+  const hexColors = uniqColors.map((color) => colorToHex[color]);
+
   return new Chart(colorsCtx, {
     plugins: [ChartDataLabels],
     type: `pie`,
     data: {
-      labels: [`BLACK`],
+      labels: uniqColors,
       datasets: [{
-        data: [1],
-        backgroundColor: [`#000`]
+        data: taskByColorCounts,
+        backgroundColor: hexColors
       }]
     },
     options: {
