@@ -5,9 +5,124 @@ import SmartView from './smart';
 import {getCurrentDate} from '../utils/task';
 import {countCompletedTaskInDateRange} from '../utils/statistics';
 
-const renderColorsChart = (colorsCtx, tasks) => {};
+const renderColorsChart = (colorsCtx, tasks) => {
+  return new Chart(colorsCtx, {
+    plugins: [ChartDataLabels],
+    type: `pie`,
+    data: {
+      labels: [`BLACK`],
+      datasets: [{
+        data: [1],
+        backgroundColor: [`#000`]
+      }]
+    },
+    options: {
+      plugins: {
+        datalabels: {
+          display: false
+        }
+      },
+      tooltips: {
+        callbacks: {
+          label: (tooltipItem, data) => {
+            const allData = data.datasets[tooltipItem.datasetIndex].data;
+            const tooltipData = allData[tooltipItem.index];
+            const total = allData.reduce((acc, it) => acc + parseFloat(it));
+            const tooltipPersentage = Math.round((tooltipData / total) * 100);
+            return `${tooltipData} TASKS - ${tooltipPersentage}%`;
+          }
+        },
+        displayColors: false,
+        backgroundColor: `#ffffff`,
+        bodyFontColor: `#000000`,
+        borderColor: `#000000`,
+        borderWidth: 1,
+        cornerRadius: 0,
+        xPadding: 15,
+        yPadding: 15
+      },
+      title: {
+        display: true,
+        test: `DONE BY: COLORS`,
+        fontSize: 16,
+        fontColor: `#000000`,
+      },
+      legend: {
+        position: `left`,
+        labels: {
+          boxWidth: 15,
+          padding: 25,
+          fontStyle: 500,
+          fontColor: `#000000`,
+          fontSize: 13
+        }
+      }
+    }
+  });
+};
 
-const renderDaysChart = (dayCtx, tasks, dateFrom, dateTo) => {};
+const renderDaysChart = (daysCtx, tasks, dateFrom, dateTo) => {
+  return new Chart(daysCtx, {
+    plugins: [ChartDataLabels],
+    type: `line`,
+    data: {
+      labels: [`3 Sep`],
+      datasets: [{
+        data: [1],
+        backgroundColor: `transparent`,
+        borderColor: `#000000`,
+        borderWidth: 1,
+        lineTension: 0,
+        pointRadius: 8,
+        pointHoverRadius: 8,
+        pointBackgroundColor: `#000000`
+      }]
+    },
+    options: {
+      plugins: {
+        datalabels: {
+          font: {
+            size: 8
+          },
+          color: `#ffffff`
+        }
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true,
+            display: false
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false
+          }
+        }],
+        xAxes: [{
+          ticks: {
+            fontStyle: `bold`,
+            fontColor: `#000000`
+          },
+          gridLines: {
+            display: false,
+            drawBorder: false
+          }
+        }]
+      },
+      legend: {
+        display: false
+      },
+      layout: {
+        padding: {
+          top: 10
+        }
+      },
+      tooltips: {
+        enabled: false
+      }
+    }
+  });
+};
 
 const createStatisticsTemplate = (data) => {
   const {tasks, dateFrom, dateTo} = data;
