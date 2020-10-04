@@ -1,3 +1,4 @@
+import he from 'he';
 import SmartView from './smart';
 import {COLORS} from '../const';
 import {isTaskRepeating, formatTaskDueDate} from '../utils/task';
@@ -6,7 +7,7 @@ import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const BLANK_TASK = {
   color: COLORS[0],
-  descrition: ``,
+  description: ``,
   dueDate: null,
   repeating: {
     mo: false,
@@ -21,43 +22,24 @@ const BLANK_TASK = {
   isFavorite: false
 };
 
-// flatpickr error
-// const createTaskEditDateTemplate = (dueDate, isDueDate) => {
-//   return `<button class="card__date-deadline-toggle" type="button">
-//       date: <span class="card__date-status">${isDueDate ? `yes` : `no`}</span>
-//     </button>
-
-//     ${isDueDate ? `
-//       <fieldset class="card__date-deadline">
-//         <label class="card__input-deadline-wrap">
-//           <input
-//             class="card__date"
-//             type="text"
-//             placeholder=""
-//             name="date"
-//             value="${formatTaskDueDate(dueDate)}"
-//           />
-//         </label>
-//       </fieldset>
-//     ` : ``}`;
-// };
-
 const createTaskEditDateTemplate = (dueDate, isDueDate) => {
   return `<button class="card__date-deadline-toggle" type="button">
       date: <span class="card__date-status">${isDueDate ? `yes` : `no`}</span>
     </button>
 
-    <fieldset class="card__date-deadline" style="display:${isDueDate ? `block` : `none`};">
-      <label class="card__input-deadline-wrap">
-        <input
-          class="card__date"
-          type="text"
-          placeholder=""
-          name="date"
-          value="${formatTaskDueDate(dueDate)}"
-        />
-      </label>
-    </fieldset>`;
+    ${isDueDate ? `
+      <fieldset class="card__date-deadline">
+        <label class="card__input-deadline-wrap">
+          <input
+            class="card__date"
+            type="text"
+            placeholder=""
+            name="date"
+            value="${formatTaskDueDate(dueDate)}"
+          />
+        </label>
+      </fieldset>
+    ` : ``}`;
 };
 
 const createTaskEditRepeatingTemplate = (repeating, isRepeating) => {
@@ -109,53 +91,53 @@ const createTaskEditTemplate = (data) => {
   const {color, description, dueDate, repeating, isDueDate, isRepeating} = data;
 
   const dateTemplate = createTaskEditDateTemplate(dueDate, isDueDate);
-  const repeatClassName = isRepeating ? `card--repeat` : ``;
+  const repeatingClassName = isRepeating ? `card--repeat` : ``;
   const repeatingTemplate = createTaskEditRepeatingTemplate(repeating, isRepeating);
   const colorsTemplate = createTaskEditColorsTemplate(color);
   const isSubmitDisabled = (isDueDate && dueDate === null) || (isRepeating && !isTaskRepeating(repeating));
 
-  return `<article class="card card--edit card--${color} ${repeatClassName}">
-      <form class="card__form" method="get">
-        <div class="card__inner">
-          <div class="card__color-bar">
-            <svg class="card__color-bar-wave" width="100%" height="10">
-              <use xlink:href="#wave"></use>
-            </svg>
-          </div>
+  return `<article class="card card--edit card--${color} ${repeatingClassName}">
+    <form class="card__form" method="get">
+      <div class="card__inner">
+        <div class="card__color-bar">
+          <svg class="card__color-bar-wave" width="100%" height="10">
+            <use xlink:href="#wave"></use>
+          </svg>
+        </div>
 
-          <div class="card__textarea-wrap">
-            <label>
-              <textarea
-                class="card__text"
-                placeholder="Start typing your text here..."
-                name="text"
-              >${description}</textarea>
-            </label>
-          </div>
+        <div class="card__textarea-wrap">
+          <label>
+            <textarea
+              class="card__text"
+              placeholder="Start typing your text here..."
+              name="text"
+            >${he.encode(description)}</textarea>
+          </label>
+        </div>
 
-          <div class="card__settings">
-            <div class="card__details">
-              <div class="card__dates">
-                ${dateTemplate}
-                ${repeatingTemplate}
-              </div>
-            </div>
-
-            <div class="card__colors-inner">
-              <h3 class="card__colors-title">Color</h3>
-              <div class="card__colors-wrap">
-                ${colorsTemplate}
-              </div>
+        <div class="card__settings">
+          <div class="card__details">
+            <div class="card__dates">
+              ${dateTemplate}
+              ${repeatingTemplate}
             </div>
           </div>
 
-          <div class="card__status-btns">
-            <button class="card__save" type="submit" ${isSubmitDisabled ? `disabled` : ``}>save</button>
-            <button class="card__delete" type="button">delete</button>
+          <div class="card__colors-inner">
+            <h3 class="card__colors-title">Color</h3>
+            <div class="card__colors-wrap">
+              ${colorsTemplate}
+            </div>
           </div>
         </div>
-      </form>
-    </article>`;
+
+        <div class="card__status-btns">
+          <button class="card__save" type="submit" ${isSubmitDisabled ? `disabled` : ``}>save</button>
+          <button class="card__delete" type="button">delete</button>
+        </div>
+      </div>
+    </form>
+  </article>`;
 };
 
 export default class TaskEdit extends SmartView {
@@ -165,6 +147,7 @@ export default class TaskEdit extends SmartView {
     this._datepicker = null;
 
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._descriptionInputHandler = this._descriptionInputHandler.bind(this);
     this._dueDateToggleHandler = this._dueDateToggleHandler.bind(this);
     this._dueDateChangeHandler = this._dueDateChangeHandler.bind(this);
@@ -174,6 +157,15 @@ export default class TaskEdit extends SmartView {
 
     this._setInnerHandlers();
     this._setDatepicker();
+  }
+
+  removeElement() {
+    super.removeElement();
+
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
   }
 
   reset(task) {
@@ -188,6 +180,7 @@ export default class TaskEdit extends SmartView {
     this._setInnerHandlers();
     this._setDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
   _setDatepicker() {
@@ -196,7 +189,7 @@ export default class TaskEdit extends SmartView {
       this._datepicker = null;
     }
 
-    if (this._data.dueDate) {
+    if (this._data.isDueDate) {
       this._datepicker = flatpickr(this.getElement().querySelector(`.card__date`), {
         dateFormat: `j F`,
         defaultDate: this._data.dueDate,
@@ -239,7 +232,7 @@ export default class TaskEdit extends SmartView {
     evt.preventDefault();
 
     this.updateData({
-      descrition: evt.target.value
+      description: evt.target.value
     }, true);
   }
 
@@ -277,6 +270,16 @@ export default class TaskEdit extends SmartView {
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector(`form`).addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(TaskEdit.parseDataToTask(this._data));
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector(`.card__delete`).addEventListener(`click`, this._formDeleteClickHandler);
   }
 
   static parseTaskToData(task) {
