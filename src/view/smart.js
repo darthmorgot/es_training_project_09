@@ -34,8 +34,7 @@ export default class Smart extends Abstract {
     this.restoreHadlers();
   }
 
-  restoreHadlers() {
-    this._setInnerHandlers();
-    this.setFormSubmitHandler(this._callback.formSubmit);
+  restoreHandlers() {
+    throw new Error(`Abstract method not implemented: resetHandlers`);
   }
 }

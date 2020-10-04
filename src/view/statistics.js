@@ -5,11 +5,11 @@ import SmartView from './smart';
 import {getCurrentDate} from '../utils/task';
 import {
   countCompletedTaskInDateRange,
-  colorToHex,
   makeItemsUniq,
   countTasksByColor,
-  parseChartDate,
+  colorToHex,
   countTasksInDateRange,
+  parseChartDate,
   getDatesInRange
 } from '../utils/statistics';
 
@@ -41,8 +41,8 @@ const renderColorsChart = (colorsCtx, tasks) => {
             const allData = data.datasets[tooltipItem.datasetIndex].data;
             const tooltipData = allData[tooltipItem.index];
             const total = allData.reduce((acc, it) => acc + parseFloat(it));
-            const tooltipPersentage = Math.round((tooltipData / total) * 100);
-            return `${tooltipData} TASKS - ${tooltipPersentage}%`;
+            const tooltipPercentage = Math.round((tooltipData / total) * 100);
+            return `${tooltipData} TASKS — ${tooltipPercentage}%`;
           }
         },
         displayColors: false,
@@ -56,9 +56,9 @@ const renderColorsChart = (colorsCtx, tasks) => {
       },
       title: {
         display: true,
-        test: `DONE BY: COLORS`,
+        text: `DONE BY: COLORS`,
         fontSize: 16,
-        fontColor: `#000000`,
+        fontColor: `#000000`
       },
       legend: {
         position: `left`,
@@ -151,26 +151,23 @@ const createStatisticsTemplate = (data) => {
         <h2 class="statistic__period-title">Task Activity DIAGRAM</h2>
 
         <div class="statistic-input-wrap">
-          <input
-            class="statistic__period-input"
-            type="text"
-            placeholder="01 Feb - 08 Feb"
-          />
+          <input class="statistic__period-input" type="text" placeholder="">
         </div>
 
         <p class="statistic__period-result">
           In total for the specified period
-          <span class="statistic__task-found">${completedTaskCount}</span> tasks were fulfilled.
+          <span class="statistic__task-found">${completedTaskCount}</span>
+          tasks were fulfilled.
         </p>
       </div>
-      <div class="statistic__line-graphic visually-hidden">
-        <canvas class="statistic__days" width="550" height="150"></canvas>
+      <div class="statistic__line-graphic">
+        <canvas class="statistic__days" width="550" height="150" style="outline: 1px solid #000;"></canvas>
       </div>
     </div>
 
     <div class="statistic__circle">
-      <div class="statistic__colors-wrap visually-hidden">
-        <canvas class="statistic__colors" width="400" height="300"></canvas>
+      <div class="statistic__colors-wrap">
+        <canvas class="statistic__colors" width="400" height="300" style="outline: 1px solid #000;"></canvas>
       </div>
     </div>
   </section>`;
@@ -191,7 +188,7 @@ export default class Statistics extends SmartView {
       dateTo: getCurrentDate()
     };
 
-    this._colorsChart = null;
+    this._colorsCart = null;
     this._daysChart = null;
 
     this._dateChangeHandler = this._dateChangeHandler.bind(this);
@@ -203,8 +200,8 @@ export default class Statistics extends SmartView {
   removeElement() {
     super.removeElement();
 
-    if (this._colorsChart !== null || this._daysChart !== null) {
-      this._colorsChart = null;
+    if (this._colorsCart !== null || this._daysChart !== null) {
+      this._colorsCart = null;
       this._daysChart = null;
     }
 
@@ -218,7 +215,7 @@ export default class Statistics extends SmartView {
     return createStatisticsTemplate(this._data);
   }
 
-  restoreHadlers() {
+  restoreHandlers() {
     this._setCharts();
     this._setDatepicker();
   }
@@ -249,8 +246,8 @@ export default class Statistics extends SmartView {
   }
 
   _setCharts() {
-    if (this._colorsChart !== null || this._daysChart !== null) {
-      this._colorsChart = null;
+    if (this._colorsCart !== null || this._daysChart !== null) {
+      this._colorsCart = null;
       this._daysChart = null;
     }
 
@@ -258,7 +255,7 @@ export default class Statistics extends SmartView {
     const colorsCtx = this.getElement().querySelector(`.statistic__colors`);
     const daysCtx = this.getElement().querySelector(`.statistic__days`);
 
-    this._colorsChart = renderColorsChart(colorsCtx, tasks);
+    this._colorsCart = renderColorsChart(colorsCtx, tasks);
     this._daysChart = renderDaysChart(daysCtx, tasks, dateFrom, dateTo);
   }
 }
