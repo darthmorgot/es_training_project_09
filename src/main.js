@@ -61,6 +61,6 @@ render(siteHeaderElement, siteMenuComponent);
 filterPresenter.init();
 boardPresenter.init();
 
-api.getTasks().then((tasks) => {
-  console.log(tasks);
-});
+api.getTasks()
+  .then((tasks) => TasksModel.setTasks(UpdateType.INIT, tasks))
+  .catch(() => TasksModel.setTasks(UpdateType.INIT, []));
