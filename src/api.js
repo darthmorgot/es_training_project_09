@@ -53,7 +53,12 @@ export default class Api {
     });
   }
 
-  _load(url, method = Method.GET, body = null, headers = new Headers()) {
+  _load({
+    url,
+    method = Method.GET,
+    body = null,
+    headers = new Headers()
+  }) {
     headers.append(`Authorization`, this._authorization);
 
     return fetch(`${this._endPoint}/${url}`, {method, body, headers})

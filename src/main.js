@@ -59,12 +59,12 @@ boardPresenter.init();
 
 api.getTasks()
   .then((tasks) => {
-    TasksModel.setTasks(UpdateType.INIT, tasks);
+    tasksModel.setTasks(UpdateType.INIT, tasks);
     render(siteHeaderElement, siteMenuComponent);
     siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
   })
   .catch(() => {
-    TasksModel.setTasks(UpdateType.INIT, []);
+    tasksModel.setTasks(UpdateType.INIT, []);
     render(siteHeaderElement, siteMenuComponent);
     siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
   });
