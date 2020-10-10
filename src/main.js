@@ -54,13 +54,17 @@ const handleSiteMenuClick = (menuItem) => {
   }
 };
 
-siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
-
-render(siteHeaderElement, siteMenuComponent);
-
 filterPresenter.init();
 boardPresenter.init();
 
 api.getTasks()
-  .then((tasks) => TasksModel.setTasks(UpdateType.INIT, tasks))
-  .catch(() => TasksModel.setTasks(UpdateType.INIT, []));
+  .then((tasks) => {
+    TasksModel.setTasks(UpdateType.INIT, tasks);
+    render(siteHeaderElement, siteMenuComponent);
+    siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+  })
+  .catch(() => {
+    TasksModel.setTasks(UpdateType.INIT, []);
+    render(siteHeaderElement, siteMenuComponent);
+    siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+  });
