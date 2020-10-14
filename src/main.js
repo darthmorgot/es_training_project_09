@@ -4,7 +4,7 @@ import BoardPresenter from './presenter/board';
 import FilterPresenter from './presenter/filter';
 import TasksModel from './model/tasks';
 import FilterModel from './model/filter';
-import Api from './api';
+import Api from './api/index';
 import {render, remove} from './utils/render';
 import {MenuItem, UpdateType, FilterType} from './const';
 
