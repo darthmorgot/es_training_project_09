@@ -3,7 +3,6 @@ import Abstract from './abstract';
 export default class Smart extends Abstract {
   constructor() {
     super();
-
     this._data = {};
   }
 
@@ -31,7 +30,7 @@ export default class Smart extends Abstract {
     parent.replaceChild(newElement, prevElement);
     prevElement = null;
 
-    this.restoreHadlers();
+    this.restoreHandlers();
   }
 
   restoreHandlers() {

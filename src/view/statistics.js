@@ -225,7 +225,10 @@ export default class Statistics extends SmartView {
       return;
     }
 
-    this.updateData({dateFrom, dateTo});
+    this.updateData({
+      dateFrom,
+      dateTo
+    });
   }
 
   _setDatepicker() {

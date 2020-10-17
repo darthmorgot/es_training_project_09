@@ -3,6 +3,7 @@ import SmartView from './smart';
 import {COLORS} from '../const';
 import {isTaskRepeating, formatTaskDueDate} from '../utils/task';
 import flatpickr from 'flatpickr';
+
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 const BLANK_TASK = {
@@ -24,73 +25,74 @@ const BLANK_TASK = {
 
 const createTaskEditDateTemplate = (dueDate, isDueDate, isDisabled) => {
   return `<button class="card__date-deadline-toggle" type="button">
-      date: <span class="card__date-status">${isDueDate ? `yes` : `no`}</span>
-    </button>
+    date: <span class="card__date-status">${isDueDate ? `yes` : `no`}</span>
+  </button>
 
-    ${isDueDate ? `
-      <fieldset class="card__date-deadline">
-        <label class="card__input-deadline-wrap">
-          <input
-            class="card__date"
-            type="text"
-            placeholder=""
-            name="date"
-            value="${formatTaskDueDate(dueDate)}"
-            ${isDisabled ? `disabled` : ``}
-          />
-        </label>
-      </fieldset>
-    ` : ``}`;
+  ${isDueDate ? `<fieldset class="card__date-deadline">
+    <label class="card__input-deadline-wrap">
+      <input
+        class="card__date"
+        type="text"
+        placeholder=""
+        name="date"
+        value="${formatTaskDueDate(dueDate)}"
+        ${isDisabled ? `disabled` : ``}
+      />
+    </label>
+  </fieldset>` : ``}`;
 };
 
 const createTaskEditRepeatingTemplate = (repeating, isRepeating, isDisabled) => {
   return `<button class="card__repeat-toggle" type="button">
-      repeat:<span class="card__repeat-status">${isRepeating ? `yes` : `no`}</span>
-    </button>
+    repeat:<span class="card__repeat-status">${isRepeating ? `yes` : `no`}</span>
+  </button>
 
-    ${isRepeating ? `
-      <fieldset class="card__repeat-days">
-        <div class="card__repeat-days-inner">
-          ${Object.entries(repeating)
-            .map(([day, repeat]) => `
-              <input
-                class="visually-hidden card__repeat-day-input"
-                type="checkbox"
-                id="repeat-${day}"
-                name="repeat"
-                value="${day}"
-                ${repeat ? `checked` : ``}
-                ${isDisabled ? `checked` : ``}
-              />
-              <label class="card__repeat-day" for="repeat-${day}"
-                >${day}</label
-              >
-            `).join(``)}
-        </div>
-      </fieldset>` : ``}`;
+  ${isRepeating ? `<fieldset class="card__repeat-days">
+    <div class="card__repeat-days-inner">
+      ${Object.entries(repeating).map(([day, repeat]) => `<input
+        class="visually-hidden card__repeat-day-input"
+        type="checkbox"
+        id="repeat-${day}"
+        name="repeat"
+        value="${day}"
+        ${repeat ? `checked` : ``}
+        ${isDisabled ? `checked` : ``}
+      />
+      <label class="card__repeat-day" for="repeat-${day}"
+        >${day}</label
+      >`).join(``)}
+    </div>
+  </fieldset>` : ``}`;
 };
 
 const createTaskEditColorsTemplate = (currentColor) => {
-  return COLORS
-    .map((color) => {
-      return `<input
-        type="radio"
-        id="color-${color}"
-        class="card__color-input card__color-input--${color} visually-hidden"
-        name="color"
-        value="${color}"
-        ${currentColor === color ? `checked` : ``}
-      />
-      <label
-        for="color-${color}"
-        class="card__color card__color--${color}"
-        >${color}</label
-      >`;
-    }).join(``);
+  return COLORS.map((color) => `<input
+    type="radio"
+    id="color-${color}"
+    class="card__color-input card__color-input--${color} visually-hidden"
+    name="color"
+    value="${color}"
+    ${currentColor === color ? `checked` : ``}
+  />
+  <label
+    for="color-${color}"
+    class="card__color card__color--${color}"
+    >${color}</label
+  >`).join(``);
 };
 
 const createTaskEditTemplate = (data) => {
-  const {color, description, dueDate, repeating, isDueDate, isRepeating, isDisabled, isSaving, isDeleting} = data;
+  const {
+    color,
+    description,
+    dueDate,
+    repeating,
+    isDueDate,
+    isRepeating,
+    isDisabled,
+    isSaving,
+    isDeleting
+  } = data;
 
   const dateTemplate = createTaskEditDateTemplate(dueDate, isDueDate, isDisabled);
   const repeatingClassName = isRepeating ? `card--repeat` : ``;
@@ -176,14 +178,16 @@ export default class TaskEdit extends SmartView {
   }
 
   reset(task) {
-    this.updateData(TaskEdit.parseTaskToData(task));
+    this.updateData(
+        TaskEdit.parseTaskToData(task)
+    );
   }
 
   getTemplate() {
     return createTaskEditTemplate(this._data);
   }
 
-  restoreHadlers() {
+  restoreHandlers() {
     this._setInnerHandlers();
     this._setDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
@@ -197,11 +201,14 @@ export default class TaskEdit extends SmartView {
     }
 
     if (this._data.isDueDate) {
-      this._datepicker = flatpickr(this.getElement().querySelector(`.card__date`), {
-        dateFormat: `j F`,
-        defaultDate: this._data.dueDate,
-        onChange: this._dueDateChangeHandler
-      });
+      this._datepicker = flatpickr(
+          this.getElement().querySelector(`.card__date`),
+          {
+            dateFormat: `j F`,
+            defaultDate: this._data.dueDate,
+            onChange: this._dueDateChangeHandler
+          }
+      );
     }
   }
 
@@ -219,7 +226,6 @@ export default class TaskEdit extends SmartView {
 
   _dueDateToggleHandler(evt) {
     evt.preventDefault();
-
     this.updateData({
       isDueDate: !this._data.isDueDate,
       isRepeating: !this._data.isDueDate && false
@@ -228,7 +234,6 @@ export default class TaskEdit extends SmartView {
 
   _repeatingToggleHandler(evt) {
     evt.preventDefault();
-
     this.updateData({
       isRepeating: !this._data.isRepeating,
       isDueDate: !this._data.isRepeating && false
@@ -237,7 +242,6 @@ export default class TaskEdit extends SmartView {
 
   _descriptionInputHandler(evt) {
     evt.preventDefault();
-
     this.updateData({
       description: evt.target.value
     }, true);
@@ -253,17 +257,17 @@ export default class TaskEdit extends SmartView {
 
   _repeatingChangeHandler(evt) {
     evt.preventDefault();
-
     this.updateData({
-      repeating: Object.assign({}, this._data.repeating, {
-        [evt.target.value]: evt.target.checked
-      })
+      repeating: Object.assign(
+          {},
+          this._data.repeating,
+          {[evt.target.value]: evt.target.checked}
+      )
     });
   }
 
   _colorChangeHandler(evt) {
     evt.preventDefault();
-
     this.updateData({
       color: evt.target.value
     });
@@ -290,13 +294,17 @@ export default class TaskEdit extends SmartView {
   }
 
   static parseTaskToData(task) {
-    return Object.assign({}, task, {
-      isDueDate: task.dueDate !== null,
-      isRepeating: isTaskRepeating(task.repeating),
-      isDisabled: false,
-      isSaving: false,
-      isDeleting: false
-    });
+    return Object.assign(
+        {},
+        task,
+        {
+          isDueDate: task.dueDate !== null,
+          isRepeating: isTaskRepeating(task.repeating),
+          isDisabled: false,
+          isSaving: false,
+          isDeleting: false
+        }
+    );
   }
 
   static parseDataToTask(data) {

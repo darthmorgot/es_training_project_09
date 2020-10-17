@@ -4,25 +4,31 @@ import BoardPresenter from './presenter/board';
 import FilterPresenter from './presenter/filter';
 import TasksModel from './model/tasks';
 import FilterModel from './model/filter';
-import Api from './api';
+import Api from './api/index';
+import Store from './api/store';
+import Provider from './api/provider';
 import {render, remove} from './utils/render';
 import {MenuItem, UpdateType, FilterType} from './const';
 
 const AUTHORIZATION = `Basic hS2sd3dfSwcl1sa2j`;
 const END_POINT = `https://12.ecmascript.pages.academy/task-manager`;
+const STORE_PREFIX = `taskmanager-localstorage`;
+const STORE_VER = `v12`;
+const STORE_NAME = `${STORE_PREFIX}-${STORE_VER}`;
 
 const siteMainElement = document.querySelector(`.main`);
 const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
 
 const api = new Api(END_POINT, AUTHORIZATION);
+const store = new Store(STORE_NAME, window.localStorage);
+const apiWithProvider = new Provider(api, store);
 
 const tasksModel = new TasksModel();
-
 const filterModel = new FilterModel();
 
 const siteMenuComponent = new SiteMenuView();
 
-const boardPresenter = new BoardPresenter(siteMainElement, tasksModel, filterModel, api);
+const boardPresenter = new BoardPresenter(siteMainElement, tasksModel, filterModel, apiWithProvider);
 const filterPresenter = new FilterPresenter(siteMainElement, filterModel, tasksModel);
 
 const handleTaskNewFormClose = () => {
@@ -57,7 +63,7 @@ const handleSiteMenuClick = (menuItem) => {
 filterPresenter.init();
 boardPresenter.init();
 
-api.getTasks()
+apiWithProvider.getTasks()
   .then((tasks) => {
     tasksModel.setTasks(UpdateType.INIT, tasks);
     render(siteHeaderElement, siteMenuComponent);
@@ -68,3 +74,22 @@ api.getTasks()
     render(siteHeaderElement, siteMenuComponent);
     siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
   });
+
+window.addEventListener(`load`, () => {
+  navigator.serviceWorker.register(`/sw.js`)
+    .then(() => {
+      console.log(`ServiceWorker available`); //eslint-disable-line
+    })
+    .catch(() => {
+      console.error(`ServiceWorker isn't available`); //eslint-disable-line
+    });
+});
+
+window.addEventListener(`online`, () => {
+  document.title = document.title.replace(` [offline]`, ``);
+  apiWithProvider.sync();
+});
+
+window.addEventListener(`offline`, () => {
+  document.title += ` [offline]`;
+});

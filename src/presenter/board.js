@@ -1,9 +1,9 @@
 import BoardView from '../view/board';
 import SortView from '../view/sort';
 import TaskListView from '../view/task-list';
+import LoadingView from '../view/loading';
 import NoTaskView from '../view/no-task';
 import LoadMoreButtonView from '../view/load-more-button';
-import Loading from '../view/loading';
 import TaskPresenter, {State as TaskPresenterViewState} from './task';
 import TaskNewPresenter from './task-new';
 import {render, RenderPosition, remove} from '../utils/render';
@@ -30,7 +30,7 @@ export default class Board {
     this._boardComponent = new BoardView();
     this._taskListComponent = new TaskListView();
     this._noTaskComponent = new NoTaskView();
-    this._loadingComponent = new Loading();
+    this._loadingComponent = new LoadingView();
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -82,7 +82,9 @@ export default class Board {
 
   _handleModeChange() {
     this._taskNewPresenter.destroy();
-    Object.values(this._taskPresenter).forEach((presenter) => presenter.resetView());
+    Object
+      .values(this._taskPresenter)
+      .forEach((presenter) => presenter.resetView());
   }
 
   _handleViewAction(actionType, updateType, update) {
@@ -165,7 +167,6 @@ export default class Board {
   _renderTask(task) {
     const taskPresenter = new TaskPresenter(this._taskListComponent, this._handleViewAction, this._handleModeChange);
     taskPresenter.init(task);
-
     this._taskPresenter[task.id] = taskPresenter;
   }
 
@@ -209,7 +210,6 @@ export default class Board {
     const taskCount = this._getTasks().length;
 
     this._taskNewPresenter.destroy();
-
     Object.values(this._taskPresenter).forEach((presenter) => presenter.destroy());
     this._taskPresenter = {};
 

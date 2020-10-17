@@ -69,7 +69,8 @@ export default class TaskNew {
     this._changeData(
         UserAction.ADD_TASK,
         UpdateType.MINOR,
-        task);
+        task
+    );
   }
 
   _handleDeleteClick() {

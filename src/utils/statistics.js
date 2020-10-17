@@ -19,7 +19,11 @@ export const countTasksByColor = (tasks, color) => {
 };
 
 export const countTasksInDateRange = (dates, tasks) => {
-  return dates.map((date) => tasks.filter((task) => isDatesEqual(task.dueDate, date)).length);
+  return dates.map(
+      (date) => tasks.filter(
+          (task) => isDatesEqual(task.dueDate, date)
+      ).length
+  );
 };
 
 export const countCompletedTaskInDateRange = (tasks, dateFrom, dateTo) => {
@@ -28,9 +32,11 @@ export const countCompletedTaskInDateRange = (tasks, dateFrom, dateTo) => {
       return counter;
     }
 
-    if (moment(task.dueDate).isSame(dateFrom) ||
+    if (
+      moment(task.dueDate).isSame(dateFrom) ||
       moment(task.dueDate).isBetween(dateFrom, dateTo) ||
-      moment(task.dueDate).isSame(dateTo)) {
+      moment(task.dueDate).isSame(dateTo)
+    ) {
       return counter + 1;
     }
 
