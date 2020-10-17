@@ -13,7 +13,10 @@ export default class Store {
   }
 
   setItems(items) {
-    this._storage.setItem(this._storeKey, JSON.stringify(items));
+    this._storage.setItem(
+        this._storeKey,
+        JSON.stringify(items)
+    );
   }
 
   setItem(key, value) {
@@ -22,7 +25,9 @@ export default class Store {
     this._storage.setItem(
         this._storeKey,
         JSON.stringify(
-            Object.assign({}, store, {[key]: value})
+            Object.assign({}, store, {
+              [key]: value
+            })
         )
     );
   }
@@ -32,6 +37,9 @@ export default class Store {
 
     delete store[key];
 
-    this._storage.setItem(this._storeKey, JSON.stringify(store));
+    this._storage.setItem(
+        this._storeKey,
+        JSON.stringify(store)
+    );
   }
 }

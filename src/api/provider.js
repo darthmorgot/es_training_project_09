@@ -9,8 +9,8 @@ const createStoreStructure = (items) => {
   return items.reduce((acc, current) => {
     return Object.assign({}, acc, {
       [current.id]: current
-    }, {});
-  });
+    });
+  }, {});
 };
 
 export default class Provider {
@@ -87,7 +87,7 @@ export default class Provider {
 
           const items = createStoreStructure([...createdTasks, ...updatedTasks]);
 
-          this._store.setItem(items);
+          this._store.setItems(items);
         });
     }
 
@@ -95,6 +95,6 @@ export default class Provider {
   }
 
   static isOnline() {
-    return window.navigator.online;
+    return window.navigator.onLine;
   }
 }

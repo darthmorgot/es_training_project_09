@@ -22,8 +22,8 @@ const siteHeaderElement = siteMainElement.querySelector(`.main__control`);
 const api = new Api(END_POINT, AUTHORIZATION);
 const store = new Store(STORE_NAME, window.localStorage);
 const apiWithProvider = new Provider(api, store);
-const tasksModel = new TasksModel();
 
+const tasksModel = new TasksModel();
 const filterModel = new FilterModel();
 
 const siteMenuComponent = new SiteMenuView();

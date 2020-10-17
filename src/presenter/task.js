@@ -26,8 +26,8 @@ export default class Task {
     this._mode = Mode.DEFAULT;
 
     this._handleEditClick = this._handleEditClick.bind(this);
-    this._handleArchiveClick = this._handleArchiveClick.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+    this._handleArchiveClick = this._handleArchiveClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
@@ -43,8 +43,8 @@ export default class Task {
     this._taskEditComponent = new TaskEditView(task);
 
     this._taskComponent.setEditClickHandler(this._handleEditClick);
-    this._taskComponent.setArchiveClickHandler(this._handleArchiveClick);
     this._taskComponent.setFavoriteClickHandler(this._handleFavoriteClick);
+    this._taskComponent.setArchiveClickHandler(this._handleArchiveClick);
     this._taskEditComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._taskEditComponent.setDeleteClickHandler(this._handleDeleteClick);
 
@@ -135,14 +135,28 @@ export default class Task {
     this._changeData(
         UserAction.UPDATE_TASK,
         UpdateType.MINOR,
-        Object.assign({}, this._task, {isFavorite: !this._task.isFavorite}));
+        Object.assign(
+            {},
+            this._task,
+            {
+              isFavorite: !this._task.isFavorite
+            }
+        )
+    );
   }
 
   _handleArchiveClick() {
     this._changeData(
         UserAction.UPDATE_TASK,
         UpdateType.MINOR,
-        Object.assign({}, this._task, {isArchive: !this._task.isArchive}));
+        Object.assign(
+            {},
+            this._task,
+            {
+              isArchive: !this._task.isArchive
+            }
+        )
+    );
   }
 
   _handleFormSubmit(update) {
@@ -153,13 +167,15 @@ export default class Task {
     this._changeData(
         UserAction.UPDATE_TASK,
         isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
-        update);
+        update
+    );
   }
 
   _handleDeleteClick(task) {
     this._changeData(
-        UserAction.UPDATE_TASK,
+        UserAction.DELETE_TASK,
         UpdateType.MINOR,
-        task);
+        task
+    );
   }
 }
