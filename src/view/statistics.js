@@ -161,19 +161,19 @@ const createStatisticsTemplate = (data) => {
         </p>
       </div>
       <div class="statistic__line-graphic">
-        <canvas class="statistic__days" width="550" height="150" style="outline: 1px solid #000;"></canvas>
+        <canvas class="statistic__days" width="550" height="150"></canvas>
       </div>
     </div>
 
     <div class="statistic__circle">
       <div class="statistic__colors-wrap">
-        <canvas class="statistic__colors" width="400" height="300" style="outline: 1px solid #000;"></canvas>
+        <canvas class="statistic__colors" width="400" height="300"></canvas>
       </div>
     </div>
   </section>`;
 };
 
-export default class Statistics extends SmartView {
+export default class StatisticsView extends SmartView {
   constructor(tasks) {
     super();
 
